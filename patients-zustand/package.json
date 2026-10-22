@@ -15,6 +15,7 @@
     "react-dom": "^19.3.1",
     "react-hook-form": "^7.90.0",
     "tailwindcss": "^4.3.3",
+    "uuid": "^14.0.3",
     "zustand": "^5.0.16"
   },
   "devDependencies": {
@@ -22,6 +23,7 @@
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
