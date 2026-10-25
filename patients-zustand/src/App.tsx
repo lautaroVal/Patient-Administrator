@@ -1,5 +1,7 @@
+import { ToastContainer } from "react-toastify"
 import PatientForm from "./components/PatientForm"
 import PatientsList from "./components/PatientsList"
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
   return (
@@ -9,12 +11,13 @@ function App() {
           Seguimiento de Pacientes {''}
           <span className="text-indigo-700">Veterinaria</span>
         </h1>
+        <div className="mt-12 md:flex">
+          <PatientForm />
+          <PatientsList />
+        </div>
       </div>
 
-      <div className="mt-12 md:flex">
-        <PatientForm />
-        <PatientsList />
-      </div>
+      <ToastContainer />
     </>
   )
 }
