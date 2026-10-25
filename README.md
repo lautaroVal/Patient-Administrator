@@ -23,7 +23,7 @@ Implementación inicial en JavaScript (JSX). El estado vive en `useState` dentro
 - Código: [`patients/`](./patients/)
 - Documentación: [`patients/README.md`](./patients/README.md)
 
-### 2. React con Zustand y React Hook Form
+### 2. React con Zustand y React Hook Form ✅💎
 
 Segunda implementación en TypeScript. El estado compartido se centraliza en un store de Zustand, los formularios se gestionan con React Hook Form y las notificaciones se muestran con React Toastify.
 
