@@ -31,6 +31,7 @@ El deploy de Netlify corresponde a esta versión.
 - Listado de pacientes, con un mensaje cuando todavía no hay ninguno.
 - Edición de un paciente: sus datos se cargan en el formulario y al guardar se actualiza el registro.
 - Eliminación de pacientes.
+- Mientras un paciente está en edición, los botones Editar y Eliminar de su tarjeta quedan deshabilitados.
 - Validación por campo con mensajes de error debajo de cada input.
 - Notificaciones al registrar, actualizar y eliminar.
 - Persistencia en `localStorage` bajo la clave `patient-storage`.
@@ -69,7 +70,7 @@ patients-zustand/
 | `App.tsx` | Título, composición de formulario y listado, y `ToastContainer` |
 | `PatientForm.tsx` | Formulario con React Hook Form, validación y alta o edición |
 | `PatientsList.tsx` | Lee `patients` del store y renderiza la lista o el estado vacío |
-| `PatientDetails.tsx` | Tarjeta de un paciente con los botones Editar y Eliminar |
+| `PatientDetails.tsx` | Tarjeta de un paciente con los botones Editar y Eliminar, que se deshabilitan si ese paciente está en edición |
 | `PatientDetailItem.tsx` | Fila de etiqueta y valor reutilizable |
 | `Error.tsx` | Mensaje de error de un campo |
 
@@ -124,7 +125,7 @@ const patients = usePatientStore(state => state.patients)
 const deletePatient = usePatientStore(state => state.deletePatient)
 ```
 
-El store se consume en `PatientForm` (`patients`, `activeId`, `addPatient`, `updatePatient`), `PatientsList` (`patients`) y `PatientDetails` (`deletePatient`, `getPatientById`). Ningún componente recibe datos del store por props, salvo `PatientDetails`, que recibe el `patient` a renderizar.
+El store se consume en `PatientForm` (`patients`, `activeId`, `addPatient`, `updatePatient`), `PatientsList` (`patients`) y `PatientDetails` (`activeId`, `deletePatient`, `getPatientById`). Ningún componente recibe datos del store por props, salvo `PatientDetails`, que recibe el `patient` a renderizar.
 
 ## Formularios con React Hook Form
 
@@ -167,8 +168,8 @@ El `<form>` define `noValidate`, por lo que la validación del navegador queda d
    - Sin `activeId`: llama a `addPatient` y muestra el toast de registro.
    - Con `activeId`: llama a `updatePatient` y muestra el toast de actualización.
 5. Luego se llama a `reset()` para limpiar el formulario.
-6. Al pulsar Editar, `PatientDetails` llama a `getPatientById(patient.id)`. El `useEffect` de `PatientForm`, que depende de `activeId`, busca ese paciente y completa los campos con `setValue`.
-7. Al pulsar Eliminar, `PatientDetails` llama a `deletePatient` y muestra el toast de eliminación. No se pide confirmación previa.
+6. Al pulsar Editar, `PatientDetails` llama a `getPatientById(patient.id)`. El `useEffect` de `PatientForm`, que depende de `activeId`, busca ese paciente y completa los campos con `setValue`. Mientras dura la edición, `PatientDetails` compara `activeId` con el `id` de su paciente y deshabilita los botones Editar y Eliminar de esa tarjeta; se reactivan cuando `updatePatient` vuelve `activeId` a `''`.
+7. Al pulsar Eliminar en un paciente que no está en edición, `PatientDetails` llama a `deletePatient` y muestra el toast de eliminación. No se pide confirmación previa.
 
 ## Instalación y ejecución
 
@@ -196,6 +197,7 @@ No hay tests automatizados configurados.
 - **Store único y acciones centralizadas.** Alta, edición y eliminación se definen en un solo archivo, en lugar de repartirse entre `App` y los componentes.
 - **Selectores individuales.** Cada componente toma solo lo que necesita del store.
 - **Edición mediante `activeId`.** El store guarda qué paciente se edita, y el formulario reacciona a ese valor para rellenarse.
+- **Bloqueo durante la edición.** Deshabilitar los botones del paciente activo evita eliminarlo mientras el formulario lo tiene cargado. Se resuelve en la UI con `disabled` y las variantes `enabled:` y `disabled:` de Tailwind, sin agregar estado nuevo al store.
 - **Persistencia declarativa.** El middleware `persist` reemplaza el `useEffect` manual de la primera versión.
 - **Formulario declarativo.** Las reglas de validación se declaran junto a cada input, y los errores por campo vienen de `formState.errors`.
 - **Tipado del dominio.** `Patient` y `DraftPatient` documentan la forma de los datos y los comparten el store y el formulario.
@@ -205,5 +207,6 @@ No hay tests automatizados configurados.
 
 - Los datos solo existen en el `localStorage` del navegador: no hay backend ni sincronización entre dispositivos.
 - La eliminación no pide confirmación.
+- No hay una acción para cancelar una edición. Además, el botón Editar de las demás tarjetas sigue habilitado y reemplaza los datos cargados en el formulario sin avisar.
 - No hay tests automatizados.
 - `npm run lint` informa una advertencia de `react-hooks/exhaustive-deps` en el `useEffect` de `PatientForm.tsx`, cuyo arreglo de dependencias contiene solo `activeId`. No es un error y no bloquea el build.

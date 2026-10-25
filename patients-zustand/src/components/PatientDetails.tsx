@@ -11,6 +11,9 @@ export default function PatientDetails({ patient }: PatientDetailsProps) {
 
   const deletePatient = usePatientStore((state) => state.deletePatient)
   const getPatientById = usePatientStore((state) => state.getPatientById)
+  const activeId = usePatientStore((state) => state.activeId)
+  
+   const isEditing = activeId === patient.id
 
   const handleClick = () => {
     deletePatient(patient.id)
@@ -27,17 +30,22 @@ export default function PatientDetails({ patient }: PatientDetailsProps) {
       <PatientDetailItem label={"Síntomas"} data={patient.symptoms} />
 
       <div className="flex flex-col lg:flex-row gap-3 justify-between mt-10">
-        <button className="py-2 px-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold uppercase cursor-pointer"
-          onClick={() => getPatientById(patient.id)}
-        >
-          Editar
-        </button>
-
-        <button className="py-2 px-10 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold uppercase cursor-pointer"
-          onClick={handleClick}
-        >
-          Eliminar
-        </button>
+        
+            <button
+              disabled={isEditing} 
+              className="py-2 px-10 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold uppercase enabled:cursor-pointer disabled:opacity-25"
+              onClick={() => getPatientById(patient.id)}
+            >
+              Editar
+            </button>
+            <button 
+              disabled={isEditing}
+              className="py-2 px-10 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold uppercase enabled:cursor-pointer disabled:opacity-25"
+              onClick={handleClick}
+            >
+              Eliminar
+            </button>
+          
       </div>
     </div>
   )
